@@ -1,0 +1,31 @@
+{
+  "name": "purescript-concur-morphdom",
+  "version": "0.1.0",
+  "description": "A morphdom port of purescript-concur",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jmars/purescript-concur-morphdom.git"
+  },
+  "keywords": [
+    "purescript",
+    "concur",
+    "virtual-dom"
+  ],
+  "author": "Jaye Marshall <marshall.jaye@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jmars/purescript-concur-morphdom/issues"
+  },
+  "homepage": "https://github.com/jmars/purescript-concur-morphdom#readme",
+  "dependencies": {
+    "morphdom": "^2.5.12"
+  }
+}
