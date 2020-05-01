@@ -1,5 +1,5 @@
 { name = "concur-morphdom"
-, version = "0.1.0"
+, version = "v0.1.0"
 , repo = "https://github.com/jmars/purescript-concur-morphdom"
 , dependencies =
   [ "console", "effect", "psci-support", "concur-core", "web-html" ]
