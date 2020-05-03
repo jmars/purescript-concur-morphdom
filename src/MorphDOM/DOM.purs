@@ -14,6 +14,7 @@ type HTML = Array VNode
 
 data VNode
   = Content (Array Prop) String
+  | Leaf String (Array Prop)
   | Node String (Array Prop) (Array VNode)
   | Empty
 
@@ -50,14 +51,50 @@ elLeaf
   -> m a
 elLeaf f = CD.elLeaf (\ps -> [f ps])
 
-text :: forall t5 t6. LiftWidget HTML t5 => String -> t5 t6
+text :: forall m a. LiftWidget HTML m => String -> m a
 text str = liftWidget $ display $ [Content [] str]
+
+style :: forall m a. LiftWidget (Array VNode) m => Array Prop -> String -> m a
+style props str = liftWidget $ display $ [Node "style" props [Content [] str]]
 
 type El
   = forall m a. MultiAlternative m => ShiftMap (Widget HTML) m => Array (Props Prop a) -> Array (m a) -> m a
+
+type Ell =
+  forall m a. LiftWidget (Array VNode) m => Array (Props Prop a) -> m a
+
+html :: El
+html = el' $ Node "html"
+
+a :: El
+a = el' $ Node "a"
 
 div :: El
 div = el' $ Node "div"
 
 button :: El
 button = el' $ Node "button"
+
+body :: El
+body = el' $ Node "body"
+
+head :: El
+head = el' $ Node "head"
+
+meta :: Ell
+meta = elLeaf $ Leaf "meta"
+
+form :: El
+form = el' $ Node "form"
+
+h1 :: El
+h1 = el' $ Node "h1"
+
+label :: El
+label = el' $ Node "label"
+
+input :: El
+input = el' $ Node "input"
+
+p :: El
+p = el' $ Node "p"

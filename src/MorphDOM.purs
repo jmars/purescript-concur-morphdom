@@ -4,11 +4,12 @@ import Prelude
 
 import Concur.Core.Discharge (discharge, dischargePartialEffect)
 import Concur.Core.Types (Widget)
-import Concur.MorphDOM.Props (Prop(..))
 import Concur.MorphDOM.DOM (VNode(..), HTML)
+import Concur.MorphDOM.Props (Prop(..))
 import Data.Array.NonEmpty (NonEmptyArray, fromArray, head, tail)
 import Data.Either (Either(..))
 import Data.Maybe (Maybe(..))
+import Data.String (joinWith)
 import Data.Traversable (foldl, sequence)
 import Data.Tuple (fst, snd)
 import Data.Tuple.Nested (type (/\), (/\))
@@ -76,6 +77,12 @@ renderEl doc (Content props str) = do
     Nothing -> pure []
     Just ps -> renderProps c ps
   pure $ (toNode c /\ listeners)
+renderEl doc (Leaf name props) = do
+  e <- createElement name doc
+  listeners <- case fromArray props of
+    Nothing -> pure []
+    Just ps -> renderProps e ps
+  pure $ (toNode e /\ listeners)
 renderEl doc (Node name props cs) = do
   e <- createElement name doc
   listeners <- case fromArray props of
@@ -124,3 +131,22 @@ runWidgetInDom elemId winit = do
     handler doc _ (Left err) = do
       log ("FAILED! " <> show err)
       pure unit
+
+renderString :: Array VNode -> String
+renderString = foldl (<>) "" <<< map renderStringEl
+  where
+    renderStringEl (Content ps s) = s
+    renderStringEl Empty = ""
+    renderStringEl (Leaf n ps) =
+      "<" <> n <> " " <> (renderPropsString ps) <> "/>"
+    renderStringEl (Node n ps vs) =
+      "<" <> n <> " " <> (renderPropsString ps) <> ">" <>
+        (renderString vs) <> "</" <> n <> ">"
+    renderPropsString = joinWith " " <<< map renderPropString
+    renderPropString (Primitive k v) = k <> "=" <> "\"" <> v <> "\""
+    renderPropString (PHandler _ _) = ""
+
+renderWidgetToString :: ∀ a. Widget HTML a -> Effect String
+renderWidgetToString winit = do
+  winit' /\ v <- dischargePartialEffect winit
+  pure $ renderString v

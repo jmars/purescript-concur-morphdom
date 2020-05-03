@@ -29,5 +29,29 @@ class' = mkProp "class"
 src :: ∀ a. Prop' a
 src = mkProp "src"
 
+lang :: ∀ a. Prop' a
+lang = mkProp "lang"
+
+charset :: ∀ a. Prop' a
+charset = mkProp "charset"
+
+action :: ∀ a. Prop' a
+action = mkProp "action"
+
+method :: ∀ a. Prop' a
+method = mkProp "method"
+
+for :: ∀ a. Prop' a
+for = mkProp "for"
+
+type' :: ∀ a. Prop' a
+type' = mkProp "type"
+
+name :: ∀ a. Prop' a
+name = mkProp "name"
+
+value :: ∀ a. Prop' a
+value = mkProp "value"
+
 onClick :: MorphProps Event
 onClick = Handler $ PHandler "click"
