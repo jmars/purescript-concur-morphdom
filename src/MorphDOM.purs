@@ -3,7 +3,7 @@ module Concur.MorphDOM where
 import Prelude
 
 import Concur.Core.Discharge (discharge, dischargePartialEffect)
-import Concur.Core.Types (Widget, WidgetStep(..), unWidget)
+import Concur.Core.Types (Widget(..), WidgetStep(..), unWidget)
 import Concur.MorphDOM.DOM (VNode(..), HTML)
 import Concur.MorphDOM.Props (Prop(..))
 import Control.Monad.Free (resume)
@@ -17,6 +17,7 @@ import Data.Tuple.Nested (type (/\), (/\))
 import Effect (Effect, foreachE)
 import Effect.Class.Console (log)
 import Effect.Uncurried (EffectFn3, runEffectFn3)
+import Effect.Unsafe (unsafePerformEffect)
 import Web.DOM (Document, Element, Node)
 import Web.DOM.Document (createElement, createTextNode)
 import Web.DOM.Element (setAttribute, toEventTarget, toNode)
@@ -156,18 +157,18 @@ renderWidgetToString winit = do
   winit' /\ v <- dischargePartialEffect winit
   pure $ renderString v
 
-renderWidgetToStringNoEffects :: ∀ a. Widget HTML a -> Maybe String
-renderWidgetToStringNoEffects winit = case dischargeNoEffect winit of
+unsafeRenderWidgetToString :: ∀ a. Widget HTML a -> Maybe String
+unsafeRenderWidgetToString winit = case dischargeUnsafeEffect winit of
   Nothing -> Nothing
   Just v -> pure $ renderString v
 
-dischargeNoEffect ::
+dischargeUnsafeEffect ::
   forall a v.
   Monoid v =>
   Widget v a ->
   Maybe v
-dischargeNoEffect w = case resume (unWidget w) of
+dischargeUnsafeEffect w = case resume (unWidget w) of
   Right _ -> Nothing
   Left (WidgetStep x1) -> case x1 of
-    Left eff -> Nothing
+    Left eff -> dischargeUnsafeEffect $ Widget $ unsafePerformEffect eff
     Right ws -> Just $ ws.view
