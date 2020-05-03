@@ -98,3 +98,6 @@ input = elLeaf $ Leaf "input"
 
 p :: El
 p = el' $ Node "p"
+
+empty :: Ell
+empty = elLeaf $ \ _ -> Empty
