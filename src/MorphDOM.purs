@@ -3,9 +3,10 @@ module Concur.MorphDOM where
 import Prelude
 
 import Concur.Core.Discharge (discharge, dischargePartialEffect)
-import Concur.Core.Types (Widget)
+import Concur.Core.Types (Widget, WidgetStep(..), unWidget)
 import Concur.MorphDOM.DOM (VNode(..), HTML)
 import Concur.MorphDOM.Props (Prop(..))
+import Control.Monad.Free (resume)
 import Data.Array.NonEmpty (NonEmptyArray, fromArray, head, tail)
 import Data.Either (Either(..))
 import Data.Maybe (Maybe(..))
@@ -137,8 +138,12 @@ renderString = foldl (<>) "" <<< map renderStringEl
   where
     renderStringEl (Content ps s) = s
     renderStringEl Empty = ""
+    renderStringEl (Leaf n []) = "<" <> n <> "/>"
     renderStringEl (Leaf n ps) =
       "<" <> n <> " " <> (renderPropsString ps) <> "/>"
+    renderStringEl (Node n [] vs) =
+      "<" <> n <> ">" <>
+        (renderString vs) <> "</" <> n <> ">"
     renderStringEl (Node n ps vs) =
       "<" <> n <> " " <> (renderPropsString ps) <> ">" <>
         (renderString vs) <> "</" <> n <> ">"
@@ -150,3 +155,19 @@ renderWidgetToString :: ∀ a. Widget HTML a -> Effect String
 renderWidgetToString winit = do
   winit' /\ v <- dischargePartialEffect winit
   pure $ renderString v
+
+renderWidgetToStringNoEffects :: ∀ a. Widget HTML a -> Maybe String
+renderWidgetToStringNoEffects winit = case dischargeNoEffect winit of
+  Nothing -> Nothing
+  Just v -> pure $ renderString v
+
+dischargeNoEffect ::
+  forall a v.
+  Monoid v =>
+  Widget v a ->
+  Maybe v
+dischargeNoEffect w = case resume (unWidget w) of
+  Right _ -> Nothing
+  Left (WidgetStep x1) -> case x1 of
+    Left eff -> Nothing
+    Right ws -> Just $ ws.view
