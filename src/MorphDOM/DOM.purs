@@ -93,8 +93,8 @@ h1 = el' $ Node "h1"
 label :: El
 label = el' $ Node "label"
 
-input :: El
-input = el' $ Node "input"
+input :: Ell
+input = elLeaf $ Leaf "input"
 
 p :: El
 p = el' $ Node "p"
