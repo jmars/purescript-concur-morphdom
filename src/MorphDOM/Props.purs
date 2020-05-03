@@ -55,3 +55,12 @@ value = mkProp "value"
 
 onClick :: MorphProps Event
 onClick = Handler $ PHandler "click"
+
+onChange :: MorphProps Event
+onChange = Handler $ PHandler "change"
+
+onTap :: MorphProps Event
+onTap = Handler $ PHandler "tap"
+
+onSubmit :: MorphProps Event
+onSubmit = Handler $ PHandler "submit"
