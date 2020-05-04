@@ -93,6 +93,9 @@ h1 = el' $ Node "h1"
 label :: El
 label = el' $ Node "label"
 
+img :: Ell
+img = elLeaf $ Leaf "img"
+
 input :: Ell
 input = elLeaf $ Leaf "input"
 
