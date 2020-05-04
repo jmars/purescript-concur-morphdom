@@ -90,6 +90,21 @@ form = el' $ Node "form"
 h1 :: El
 h1 = el' $ Node "h1"
 
+h2 :: El
+h2 = el' $ Node "h2"
+
+h3 :: El
+h3 = el' $ Node "h3"
+
+h4 :: El
+h4 = el' $ Node "h4"
+
+h5 :: El
+h5 = el' $ Node "h5"
+
+h6 :: El
+h6 = el' $ Node "h6"
+
 label :: El
 label = el' $ Node "label"
 
