@@ -54,12 +54,6 @@ elLeaf f = CD.elLeaf (\ps -> [f ps])
 text :: forall m a. LiftWidget HTML m => String -> m a
 text str = liftWidget $ display $ [Content [] str]
 
-style :: forall m a. LiftWidget (Array VNode) m => Array Prop -> String -> m a
-style props str = liftWidget $ display $ [Node "style" props [Content [] str]]
-
-script :: forall m a. LiftWidget (Array VNode) m => Array Prop -> String -> m a
-script props str = liftWidget $ display $ [Node "style" props [Content [] str]]
-
 type El
   = forall m a. MultiAlternative m => ShiftMap (Widget HTML) m => Array (Props Prop a) -> Array (m a) -> m a
 
@@ -68,6 +62,12 @@ type Ell =
 
 html :: El
 html = el' $ Node "html"
+
+style :: El
+style = el' $ Node "style"
+
+script :: El
+script = el' $ Node "script"
 
 a :: El
 a = el' $ Node "a"
