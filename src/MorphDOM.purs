@@ -21,7 +21,7 @@ import Effect.Unsafe (unsafePerformEffect)
 import Web.DOM (Document, Element, Node)
 import Web.DOM.Document (createElement, createTextNode)
 import Web.DOM.Element (setAttribute, toEventTarget, toNode)
-import Web.DOM.Node (appendChild)
+import Web.DOM.Node (appendChild, nodeName)
 import Web.DOM.NonElementParentNode (getElementById)
 import Web.DOM.Text (toNode) as T
 import Web.Event.Event (EventType(..))
@@ -99,9 +99,9 @@ renderEl doc (Node name props cs) = do
 renderChildren :: Document -> Array VNode -> Effect (Array (Node /\ NodeListeners))
 renderChildren doc ee = sequence $ map (\a -> renderEl doc a) ee
 
-render :: Document -> Array VNode -> Effect (Element /\ NodeListeners)
-render doc els = do
-  fragment <- createElement "div" doc
+render :: Element -> Document -> Array VNode -> Effect (Element /\ NodeListeners)
+render node doc els = do
+  fragment <- createElement (nodeName (toNode node)) doc
   c <- renderChildren doc els
   let childListeners = foldl (<>) [] $ map snd c
   let children = map fst c
@@ -122,13 +122,13 @@ runWidgetInDom elemId winit = do
     run ::  Element -> Document -> Effect Unit
     run node doc = do
       winit' /\ v <- dischargePartialEffect winit
-      r <- render doc $ v
+      r <- render node doc v
       void $ morphdom node (fst r) (snd r)
       handler doc node (Right winit')
       pure unit
     handler doc node (Right r) = do
       v <- discharge (handler doc node) r
-      res <- render doc v
+      res <- render node doc v
       void $ morphdom node (fst res) (snd res)
     handler doc _ (Left err) = do
       log ("FAILED! " <> show err)
