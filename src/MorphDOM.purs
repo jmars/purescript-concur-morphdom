@@ -9,7 +9,7 @@ import Concur.MorphDOM.Props (Prop(..))
 import Control.Monad.Free (resume)
 import Data.Array.NonEmpty (NonEmptyArray, fromArray, head, tail)
 import Data.Either (Either(..))
-import Data.Maybe (Maybe(..))
+import Data.Maybe (Maybe(..), maybe)
 import Data.String (joinWith)
 import Data.Traversable (foldl, sequence)
 import Data.Tuple (fst, snd)
@@ -20,7 +20,7 @@ import Effect.Uncurried (EffectFn3, runEffectFn3)
 import Effect.Unsafe (unsafePerformEffect)
 import Web.DOM (Document, Element, Node)
 import Web.DOM.Document (createElement, createTextNode)
-import Web.DOM.Element (setAttribute, toEventTarget, toNode)
+import Web.DOM.Element (getAttribute, setAttribute, toEventTarget, toNode)
 import Web.DOM.Node (appendChild, nodeName)
 import Web.DOM.NonElementParentNode (getElementById)
 import Web.DOM.Text (toNode) as T
@@ -101,7 +101,9 @@ renderChildren doc ee = sequence $ map (\a -> renderEl doc a) ee
 
 render :: Element -> Document -> Array VNode -> Effect (Element /\ NodeListeners)
 render node doc els = do
+  id <- getAttribute "id" node
   fragment <- createElement (nodeName (toNode node)) doc
+  setAttribute "id" (maybe "" identity id) fragment
   c <- renderChildren doc els
   let childListeners = foldl (<>) [] $ map snd c
   let children = map fst c
