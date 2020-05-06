@@ -53,6 +53,9 @@ name = mkProp "name"
 value :: ∀ a. Prop' a
 value = mkProp "value"
 
+checked :: ∀ a. Prop' a
+checked = mkProp "checked"
+
 onClick :: MorphProps Event
 onClick = Handler $ PHandler "click"
 

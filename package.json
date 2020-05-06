@@ -1,6 +1,6 @@
 {
   "name": "purescript-concur-morphdom",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "description": "A morphdom port of purescript-concur",
   "main": "index.js",
   "directories": {
