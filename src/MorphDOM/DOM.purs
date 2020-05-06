@@ -57,6 +57,9 @@ text str = liftWidget $ display $ [Content [] str]
 style :: forall m a. LiftWidget (Array VNode) m => Array Prop -> String -> m a
 style props str = liftWidget $ display $ [Node "style" props [Content [] str]]
 
+script :: forall m a. LiftWidget (Array VNode) m => Array Prop -> String -> m a
+script props str = liftWidget $ display $ [Node "style" props [Content [] str]]
+
 type El
   = forall m a. MultiAlternative m => ShiftMap (Widget HTML) m => Array (Props Prop a) -> Array (m a) -> m a
 
